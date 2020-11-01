@@ -1,8 +1,10 @@
 // import dependencies
-import express from "express";
-import bodyParser from "body-parser";
-import mongoose from "mongoose";
-import logger from "morgan";
+const express = require("express");
+const bodyParser = require("body-parser");
+const mongoose = require("mongoose");
+const logger = require("morgan");
+const mainRoutes = require("./server/routes/main");
+
 // set up dependencies
 const app = express();
 app.use(bodyParser.json());
@@ -25,6 +27,8 @@ app.get("/", (req, res) => {
     message: "Welcome!",
   });
 });
+// set up route
+app.use("/api/", mainRoutes);
 app.listen(port, () => {
   console.log(`Our server is running on port ${port}`);
 });
