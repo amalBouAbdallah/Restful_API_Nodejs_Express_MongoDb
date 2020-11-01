@@ -45,60 +45,87 @@ function getAllUsers(req, res) {
     });
 }
 
-// get single user
+// Find a single user with a userId
 function getSingleUser(req, res) {
-  const id = req.params.userId;
-  User.findById(id)
-    .then((singleUser) => {
-      res.status(200).json({
-        success: true,
-        message: `More on ${singleUser.Email}`,
-        User: singleUser,
-      });
+  User.findById(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found with id " + req.params.userId,
+        });
+      }
+      res.send(user);
     })
     .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: "This user does not exist",
-        error: err.message,
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "User not found with id " + req.params.userId,
+        });
+      }
+      return res.status(500).send({
+        message: "Error retrieving user with id " + req.params.userId,
       });
     });
 }
-// update user
+// Update a user identified by the userId in the request
 function updateUser(req, res) {
-  const id = req.params.userId;
-  const updateObject = req.body;
-  User.update({ _id: id }, { $set: updateObject })
-    .exec()
-    .then(() => {
-      res.status(200).json({
-        success: true,
-        message: "User is updated",
-        updateUser: updateObject,
-      });
+  // Validate Request
+  if (!req.body.content) {
+    return res.status(400).send({
+      message: "User content can not be empty",
+    });
+  }
+
+  // Find user and update it with the request body
+  User.findByIdAndUpdate(
+    req.params.userId,
+    {
+      FullName: req.body.FullName,
+      Email: req.body.Email,
+    },
+    { new: true }
+  )
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found with id " + req.params.userId,
+        });
+      }
+      res.send(user);
     })
     .catch((err) => {
-      res.status(500).json({
-        success: false,
-        message: "Server error. Please try again.",
+      if (err.kind === "ObjectId") {
+        return res.status(404).send({
+          message: "User not found with id " + req.params.userId,
+        });
+      }
+      return res.status(500).send({
+        message: "Error updating user with id " + req.params.userId,
       });
     });
 }
-// delete a cause
+
+// Delete a user with the specified userId in the request
 function deleteUser(req, res) {
-  const id = req.params.userId;
-  User.findByIdAndRemove(id)
-    .exec()
-    .then(() =>
-      res.status(204).json({
-        success: true,
-      })
-    )
-    .catch((err) =>
-      res.status(500).json({
-        success: false,
-      })
-    );
+  User.findByIdAndRemove(req.params.userId)
+    .then((user) => {
+      if (!user) {
+        return res.status(404).send({
+          message: "User not found with id " + req.params.userId,
+        });
+      }
+      res.send({ message: "User deleted successfully!" });
+    })
+    .catch((err) => {
+      if (err.kind === "ObjectId" || err.name === "NotFound") {
+        return res.status(404).send({
+          message: "User not found with id " + req.params.userId,
+        });
+      }
+      return res.status(500).send({
+        message: "Could not delete user with id " + req.params.userId,
+      });
+    });
 }
 
 module.exports = {
