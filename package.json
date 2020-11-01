@@ -1,0 +1,26 @@
+{
+  "name": "restfulapinodejsexpressmongodb",
+  "version": "1.0.0",
+  "description": "Rest Api With node js",
+  "main": "index.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "mongoose": "^5.10.11",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/amalBouAbdallah/Restful_API_Nodejs_Express_MongoDb"
+  },
+  "keywords": [
+    "REST",
+    "API",
+    "Node"
+  ],
+  "author": "Amal Bou Abdallah",
+  "license": "ISC"
+}
