@@ -20,7 +20,7 @@ mongoose
     console.log("Error connecting to database");
   });
 // set up port
-const port = 5035;
+const port = process.env.PORT || 5035;
 // set up route
 app.get("/", (req, res) => {
   res.status(200).json({
